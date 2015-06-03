@@ -1,0 +1,38 @@
+{
+  "name": "complete",
+  "version": "0.0.1",
+  "description": "Pure JavaScript completion model",
+  "main": "Brocfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "broccoli": "^0.16.3",
+    "broccoli-babel-transpiler": "^5.0.0",
+    "broccoli-es6modules": "^0.6.0",
+    "broccoli-funnel": "^0.2.3",
+    "broccoli-merge-trees": "^0.2.1",
+    "broccoli-sourcemap-concat": "^0.4.4",
+    "karma": "^0.12.35",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-mocha": "^0.1.10",
+    "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "test": "karma run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cowboyd/complete.js.git"
+  },
+  "keywords": [
+    "completion",
+    "mvc",
+    "frp",
+    "immutable"
+  ],
+  "author": "Charles Lowell <cowboyd@frontside.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cowboyd/complete.js/issues"
+  },
+  "homepage": "https://github.com/cowboyd/complete.js#readme"
+}
