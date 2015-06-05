@@ -26,6 +26,9 @@ describe("Complete", function() {
     it("does not have a currently inspected match", function() {
       expect(data.currentMatch).to.be.null;
     });
+    it("is not currentlyInspectingMatches", function() {
+      expect(data.isInspectingMatches).to.equal(false);
+    });
   });
   describe("with a source that returns a list of synchronous values", function() {
     before(function() {
@@ -34,10 +37,24 @@ describe("Complete", function() {
       };
     });
     beforeEach(function() {
-     return complete.setQuery('bob');
+      return complete.setQuery('bob');
+    });
+    it("indicates that it is now inspecting matches", function() {
+      expect(data.isInspectingMatches).to.equal(true);
     });
     it("updates the matches", function() {
       expect(data.matches).to.deep.equal(['bob', 'bob bob', 3]);
+    });
+    describe("cancelling out", function() {
+      beforeEach(function() {
+        complete.cancel();
+      });
+      it("it markes it as not inspecting matches anymore", function() {
+        expect(data.isInspectingMatches).to.equal(false);
+      });
+      it("is no longer pending", function() {
+        expect(data.isPending).to.equal(false);
+      });
     });
   });
   describe("with a source that returns a promise of values", function() {
@@ -69,6 +86,19 @@ describe("Complete", function() {
       });
       it("sets the reason for rejection", function() {
         expect(data.reason).to.equal('could not communicate with the server');
+      });
+    });
+    describe("with one that is cancelled before resolving", function() {
+      beforeEach(function() {
+        complete.cancel();
+        this.resolve(['hey', 'buddy']);
+        return this.promise;
+      });
+      it("ignores the matches", function() {
+        expect(data.matches).to.deep.equal([]);
+      });
+      it("is not pending", function() {
+        expect(data.isPending).to.equal(false);
       });
     });
   });
