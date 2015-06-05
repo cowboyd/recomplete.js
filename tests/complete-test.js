@@ -62,8 +62,14 @@ describe("Complete", function() {
         expect(data.matches).to.deep.equal(['bob', 'dobalina', 'mr bob dobalina']);
       });
     });
-
-
+    describe("that is rejected", function() {
+      beforeEach(function(){
+        this.reject('could not communicate with the server');
+        return this.promise.catch(e => {});
+      });
+      it("sets the reason for rejection", function() {
+        expect(data.reason).to.equal('could not communicate with the server');
+      });
+    });
   });
-
 });
