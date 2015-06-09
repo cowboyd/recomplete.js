@@ -56,6 +56,55 @@ describe("Complete", function() {
         expect(data.isPending).to.equal(false);
       });
     });
+    describe(". Match inspection:", function() {
+      describe("inspecting the first match", function() {
+        beforeEach(function() {
+          complete.inspectNextMatch();
+        });
+        it("updates the current match to be the one at index 0", function() {
+          expect(data.currentMatch).to.equal('bob');
+        });
+        describe(", then inspecting the previous match", function() {
+          beforeEach(function() {
+            complete.inspectPreviousMatch();
+          });
+          it("nulls out the current match", function() {
+            expect(data.currentMatch).to.equal(null);
+          });
+        });
+        describe(", then inspecting the next match", function() {
+          beforeEach(function() {
+            complete.inspectNextMatch();
+          });
+          it("considers the next match", function() {
+            expect(data.currentMatch).to.equal('bob bob');
+          });
+        });
+      });
+      describe("immediately inspecting the previous match", function() {
+        beforeEach(function() {
+          complete.inspectPreviousMatch();
+        });
+        it("considers the last match", function() {
+          expect(data.currentMatch).to.equal(3);
+        });
+
+      });
+      describe("inspecting past the last match", function() {
+        beforeEach(function() {
+          complete.inspectNextMatch();
+          complete.inspectNextMatch();
+          complete.inspectNextMatch();
+          complete.inspectNextMatch();
+        });
+        it("nulls out the current match", function() {
+          expect(data.currentMatch).to.equal(null);
+        });
+      });
+    });
+
+
+
   });
   describe("with a source that returns a promise of values", function() {
     before(function() {
