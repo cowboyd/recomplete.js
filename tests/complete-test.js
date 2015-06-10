@@ -8,10 +8,10 @@ describe("Complete", function() {
 
   beforeEach(function() {
     complete = new Complete(source);
-    this.unobserve = complete.observe(version => data = version);
+    this.unsubscribe = complete.subscribe(version => data = version);
   });
   afterEach(function() {
-    this.unobserve();
+    this.unsubscribe();
   });
   describe("with no source", function() {
     beforeEach(function() {
