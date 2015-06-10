@@ -45,6 +45,7 @@ describe("Complete", function() {
     it("updates the matches", function() {
       expect(data.matches).to.deep.equal(['bob', 'bob bob', 3]);
     });
+
     describe("cancelling out", function() {
       beforeEach(function() {
         complete.cancel();
@@ -102,9 +103,6 @@ describe("Complete", function() {
         });
       });
     });
-
-
-
   });
   describe("with a source that returns a promise of values", function() {
     before(function() {
