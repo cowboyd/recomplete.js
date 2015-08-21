@@ -97,14 +97,45 @@ currentState.isInspectingMatches //=> true
 ```
 
 You are now considered to be "inspecting" matches. This corresponds to
-a user having been presented a set of matches and now they are
-considering which one to go to. Perhaps the user hits down arrow. You
-might want to call:
+a user having been presented a set of matches, usually in the form of
+a popoup list. Now they are considering which one to go to
+with. Recomplete provides actions to understand those decisions. Let's
+say they don't like the first
+:
 
 ```js
 recomplete.inspectNextMatch()
 currentState.currentMatch //=> advanced one match
 ```
+
+Maybe you want to cancel. To continue our JQuery example, maybe you
+hit the `ESC` key. In that case, you would invoke:
+
+```js
+$(this).on('keyup', function(event) {
+  if (event.keyCode === 27) {
+    recomplete.cancel();
+    currentState.isInspectingMatches //=> false
+  }
+});
+
+```
+
+Or maybe they don't cancel, instead they hit the enter key, and you
+want that to mean selecting the currently selected match. In either
+case, after a selection is made, the workflow is no longer considered
+to be inspecting matches.
+
+```js
+$(this).on('keyup', function() {
+  if (event.keyCode === 13) {
+    recomplete.selectCurrentMatch();
+    currentState.value //=> the value that was just selected
+    currentState.isInpsectingMatches //=> false
+  }
+});
+```
+
 
 ## Development
 
