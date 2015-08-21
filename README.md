@@ -59,7 +59,7 @@ let recomplete = new Recomplete(function(query) {
 
 // subscribe to changes in this recomplete instance. It returns a
 // function which can be invoked to unsubscribe.
-// let currentState = null;
+let currentState = null;
 let unsubscribe = recomplete.subscribe(function(model) {
   currentState = model;
   // render this model to the screen.
