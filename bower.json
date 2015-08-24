@@ -1,11 +1,11 @@
 {
-  "name": "complete",
+  "name": "recomplete",
   "version": "0.0.0",
   "authors": [
     "Charles Lowell <cowboyd@frontside.io>"
   ],
   "description": "Pure JavaScript completion model",
-  "main": "lib/complete.js",
+  "main": "lib/recomplete.js",
   "moduleType": [
     "es6"
   ],
@@ -16,7 +16,7 @@
     "immutable"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/cowboyd/complete.js",
+  "homepage": "https://github.com/cowboyd/recomplete.js",
   "ignore": [
     "**/.*",
     "node_modules",

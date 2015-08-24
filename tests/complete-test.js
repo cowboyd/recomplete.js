@@ -1,4 +1,4 @@
-import Complete from 'complete';
+import Recomplete from 'recomplete';
 const { expect } = chai;
 
 describe("Complete", function() {
@@ -7,7 +7,7 @@ describe("Complete", function() {
   let data = null;
 
   beforeEach(function() {
-    complete = new Complete(source);
+    complete = new Recomplete(source);
     this.unsubscribe = complete.subscribe(version => data = version);
   });
   afterEach(function() {
