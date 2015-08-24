@@ -23,7 +23,7 @@ using don't always fit quite right.
 That's where recomplete comes in. It seeks to make the question of
 "what's the best completion plugin for framework X?"  obsolete.
 
-That's because autocompletion isn't widget, a it's work flow. It's a
+That's because autocompletion isn't widget, it's a work flow. It's a
 workflow that exists outside the scope of any one UI framework, and
 Recomplete.js seeks to capture that workflow in a simple JavaScript
 model that can be represented it in any medium, visual or otherwise..

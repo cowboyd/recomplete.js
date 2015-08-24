@@ -2,20 +2,20 @@ import Recomplete from 'recomplete';
 const { expect } = chai;
 
 describe("Complete", function() {
-  let complete = null;
+  let recomplete = null;
   let source = null;
   let data = null;
 
   beforeEach(function() {
-    complete = new Recomplete(source);
-    this.unsubscribe = complete.subscribe(version => data = version);
+    recomplete = new Recomplete(source);
+    this.unsubscribe = recomplete.subscribe(version => data = version);
   });
   afterEach(function() {
     this.unsubscribe();
   });
   describe("with no source", function() {
     beforeEach(function() {
-      return complete.setQuery('bob');
+      return recomplete.setQuery('bob');
     });
     it("has no matches", function() {
       expect(data.matches).to.be.empty;
@@ -37,7 +37,7 @@ describe("Complete", function() {
       };
     });
     beforeEach(function() {
-      return complete.setQuery('bob');
+      return recomplete.setQuery('bob');
     });
     it("indicates that it is now inspecting matches", function() {
       expect(data.isInspectingMatches).to.equal(true);
@@ -48,7 +48,7 @@ describe("Complete", function() {
 
     describe("cancelling out", function() {
       beforeEach(function() {
-        complete.cancel();
+        recomplete.cancel();
       });
       it("it markes it as not inspecting matches anymore", function() {
         expect(data.isInspectingMatches).to.equal(false);
@@ -60,14 +60,14 @@ describe("Complete", function() {
     describe(". Match inspection:", function() {
       describe("inspecting the first match", function() {
         beforeEach(function() {
-          complete.inspectNextMatch();
+          recomplete.inspectNextMatch();
         });
         it("updates the current match to be the one at index 0", function() {
           expect(data.currentMatch).to.equal('bob');
         });
         describe(", then inspecting the previous match", function() {
           beforeEach(function() {
-            complete.inspectPreviousMatch();
+            recomplete.inspectPreviousMatch();
           });
           it("nulls out the current match", function() {
             expect(data.currentMatch).to.equal(null);
@@ -75,7 +75,7 @@ describe("Complete", function() {
         });
         describe(", then inspecting the next match", function() {
           beforeEach(function() {
-            complete.inspectNextMatch();
+            recomplete.inspectNextMatch();
           });
           it("considers the next match", function() {
             expect(data.currentMatch).to.equal('bob bob');
@@ -84,7 +84,7 @@ describe("Complete", function() {
       });
       describe("immediately inspecting the previous match", function() {
         beforeEach(function() {
-          complete.inspectPreviousMatch();
+          recomplete.inspectPreviousMatch();
         });
         it("considers the last match", function() {
           expect(data.currentMatch).to.equal(3);
@@ -93,10 +93,10 @@ describe("Complete", function() {
       });
       describe("inspecting past the last match", function() {
         beforeEach(function() {
-          complete.inspectNextMatch();
-          complete.inspectNextMatch();
-          complete.inspectNextMatch();
-          complete.inspectNextMatch();
+          recomplete.inspectNextMatch();
+          recomplete.inspectNextMatch();
+          recomplete.inspectNextMatch();
+          recomplete.inspectNextMatch();
         });
         it("nulls out the current match", function() {
           expect(data.currentMatch).to.equal(null);
@@ -115,7 +115,7 @@ describe("Complete", function() {
       };
     });
     beforeEach(function() {
-      complete.setQuery('bob');
+      recomplete.setQuery('bob');
     });
     describe("that resolves to an array", function() {
       beforeEach(function() {
@@ -137,7 +137,7 @@ describe("Complete", function() {
     });
     describe("with one that is cancelled before resolving", function() {
       beforeEach(function() {
-        complete.cancel();
+        recomplete.cancel();
         this.resolve(['hey', 'buddy']);
         return this.promise;
       });
