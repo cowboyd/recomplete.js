@@ -23,10 +23,10 @@ using don't always fit quite right.
 That's where recomplete comes in. It seeks to make the question of
 "what's the best completion plugin for framework X?"  obsolete.
 
-That's because autocompletion isn't widget, it's a work flow. It's a
+That's because autocompletion isn't a widget, it's a workflow. It's a
 workflow that exists outside the scope of any one UI framework, and
 Recomplete.js seeks to capture that workflow in a simple JavaScript
-model that can be represented it in any medium, visual or otherwise..
+model that can be represented in any medium, visual or otherwise..
 
 In other words, Recomplete doesn't give you an autocomplete widget,
 but what it does do is make building your own that is custom-fit
@@ -42,7 +42,7 @@ its model that can be used to render.
 > Note: There is no concept of fine-grained events in
 > recomplete. Every time there is a state change, it re-emits
 > the workflow's model in its entirety. The data structure
-> representing is the state is immutable in the sense that any changes
+> representing the state is immutable in the sense that any changes
 > made to it will not have any effect on workflow state.
 
 ```js
@@ -139,8 +139,7 @@ $(this).on('keyup', function() {
 
 ## Development
 
-The development has a few unfortunate paper cuts at the moment mess at
-the moment since it's using a (mostly failed) experimental integration
+The development has a few unfortunate paper cuts at the moment since it's using a (mostly failed) experimental integration
 of Broccoli and Karma. You will need to start the Broccoli server
 first, before running any tests, since Karma will need to use the
 Broccoli assets in order to load the tests.
