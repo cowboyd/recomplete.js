@@ -7,11 +7,13 @@ describe("Recomplete", function() {
   let recomplete = null;
   let source = null;
   let data = null;
+  let defaultMatch = null;
 
   beforeEach(function() {
     recomplete = new Recomplete({
       source: source,
-      observe: version => data = version
+      observe: version => data = version,
+      defaultMatch: defaultMatch
     });
   });
   describe("with no source", function() {
@@ -148,6 +150,33 @@ describe("Recomplete", function() {
       it("is not pending", function() {
         expect(data.isPending).to.equal(false);
       });
+    });
+  });
+
+  describe("with a default match", function () {
+    before(function() {
+      source = (query)=> {
+        return ["first", "second"];
+      };
+      beforeEach(function() {
+        recomplete.setQuery("bob");
+        recomplete.inspectNextMatch();
+        recomplete.inspectNextMatch();
+        recomplete.inspectNextMatch();
+      });
+      it("is inspecting the default match");
+    });
+    describe("that is a constant value", function() {
+      before(function() {
+        defaultMatch = "iamdefault";
+      });
+      it("uses the constant default as its match value");
+    });
+    describe("that is a function", function() {
+      before(function() {
+        defaultMatch = (query)=> `iamdefault 4 ${query}`;
+      });
+      it("passes the query to the function in order to yield its match value");
     });
   });
 });
