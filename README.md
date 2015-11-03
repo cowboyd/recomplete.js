@@ -146,28 +146,16 @@ $(this).on('keyup', function() {
 
 ## Development
 
-The development has a few unfortunate paper cuts at the moment since it's using a (mostly failed) experimental integration
-of Broccoli and Karma. You will need to start the Broccoli server
-first, before running any tests, since Karma will need to use the
-Broccoli assets in order to load the tests.
+Recomplete is written using ES6 and follows [this template][1] for
+distributing NPM packages containing ES6 source.
 
+checkout the source and run the tests:
 
-```bash
-npm install
-broccoli serve
+```
+$ git clone https://github.com/cowboyd/recomplete.js.git
+$ cd recomplete.js
+$ npm install
+$ npm test
 ```
 
-Then, in a separate shell
-
-```bash
-karma start --single-run
-INFO [karma]: Karma v0.12.36 server started at http://localhost:9876/
-INFO [launcher]: Starting browser Chrome
-WARN [web-server]: 404: /favicon.ico
-INFO [Chrome 44.0.2403 (Mac OS X 10.10.5)]: Connected on socket Nq-DqneXNlDICQlfhUaX with id 46196622
-.................
-Chrome 44.0.2403 (Mac OS X 10.10.5): Executed 17 of 17 SUCCESS (0.095 secs / 0.002 secs)
-```
-
-When you make changes, you'll need to wait until Broccoli finishes
-building the library and tests so that they will run properly.
+[1]: https://github.com/benjamn/jsnext-skeleton
