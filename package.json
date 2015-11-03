@@ -2,22 +2,20 @@
   "name": "complete",
   "version": "0.0.1",
   "description": "Pure JavaScript completion model",
-  "main": "Brocfile.js",
-  "dependencies": {},
+  "main": "./.js",
+  "jsnext:main": "./src/index.js",
+  "dependencies": {
+    "immstruct": ">= 2.0.0",
+    "babel-runtime": "^5.8.25"
+  },
   "devDependencies": {
-    "broccoli": "^0.16.3",
-    "broccoli-babel-transpiler": "^5.0.0",
-    "broccoli-es6modules": "^0.6.0",
-    "broccoli-funnel": "^0.2.3",
-    "broccoli-merge-trees": "^0.2.1",
-    "broccoli-sourcemap-concat": "^0.4.4",
-    "karma": "^0.12.35",
-    "karma-chrome-launcher": "^0.1.12",
-    "karma-mocha": "^0.1.10",
-    "mocha": "^2.2.5"
+    "babel": "^5.8.23",
+    "chai": "^3.4.0",
+    "mocha": "^2.3.3"
   },
   "scripts": {
-    "test": "karma run"
+    "prepublish": "babel --optional runtime src/ --out-dir lib/",
+    "test": "mocha --reporter spec --full-trace test/index.js"
   },
   "repository": {
     "type": "git",

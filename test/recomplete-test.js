@@ -1,5 +1,7 @@
-import Recomplete from 'recomplete';
-const { expect } = chai;
+/*global describe, beforeEach, afterEach, before, it */
+
+import Recomplete from '../src/recomplete';
+import { expect } from 'chai';
 
 describe("Complete", function() {
   let recomplete = null;
