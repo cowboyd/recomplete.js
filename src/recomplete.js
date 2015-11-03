@@ -1,7 +1,7 @@
 export default class Recomplete {
-  constructor(source) {
-    this.source = source || (()=> []);
-    this.subscribers = [];
+  constructor(options = {}) {
+    this.source = options.source || (()=> []);
+    this.observe = options.observe || function() {};
     this.data = {
       query: '',
       value: null,
@@ -98,13 +98,6 @@ export default class Recomplete {
       });
     }
   }
-
-  subscribe(fn) {
-    let subscribers = this.subscribers;
-    let notify = ()=> fn(this.data);
-    subscribers.push(notify);
-    return ()=> subscribers.splice(subscribers.indexOf(notify), 1);
-  }
 };
 
 function update(object, attributes) {
@@ -116,7 +109,5 @@ function update(object, attributes) {
   Object.keys(attributes).forEach(function(key) {
     object.data[key] = attributes[key];
   });
-  object.subscribers.forEach(function(fn) {
-    fn.call(null, object.data, object);
-  });
+  object.observe.call(null, object.data, object);
 }

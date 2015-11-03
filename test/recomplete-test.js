@@ -3,17 +3,16 @@
 import Recomplete from '../src/recomplete';
 import { expect } from 'chai';
 
-describe("Complete", function() {
+describe("Recomplete", function() {
   let recomplete = null;
   let source = null;
   let data = null;
 
   beforeEach(function() {
-    recomplete = new Recomplete(source);
-    this.unsubscribe = recomplete.subscribe(version => data = version);
-  });
-  afterEach(function() {
-    this.unsubscribe();
+    recomplete = new Recomplete({
+      source: source,
+      observe: version => data = version
+    });
   });
   describe("with no source", function() {
     beforeEach(function() {

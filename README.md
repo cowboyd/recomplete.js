@@ -55,18 +55,21 @@ import Recomplete from 'recomplete';
 // create a new instance passing a data source. The datasource is a
 // function that takes a query and returns either an array of matches
 // or a promise that yields an array of matches
-let recomplete = new Recomplete(function(query) {
-  return new Promise(function(resolve, reject) {
-    makeRequestForMatchesFromSomewhere(resolve, reject);
-  });
-});
+let recomplete = new Recomplete({
+  // this function will be invoked whenever a new query is available
+  // it should return a promise that yields matches for the query.
+  // If it returns a synchronous value, it will be wrapped in a promise that
+  // resolves immediately.
 
-// subscribe to changes in this recomplete instance. It returns a
-// function which can be invoked to unsubscribe.
-let currentState = null;
-let unsubscribe = recomplete.subscribe(function(model) {
-  currentState = model;
-  // render this model to the screen.
+  source: function(query) {
+    return new Promise(function(resolve, reject) {
+      makeRequestForMatchesFromSomewhere(resolve, reject);
+    });
+  },
+  // this function will be invoked whenever the completion changes state
+  observe: function(state) {
+    currentState = state;
+  }
 });
 ```
 
