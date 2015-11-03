@@ -14,7 +14,7 @@
     "mocha": "^2.3.3"
   },
   "scripts": {
-    "prepublish": "babel --optional runtime src/ --out-dir lib/",
+    "prepublish": "babel --optional runtime src/ --out-dir lib/ --source-maps",
     "test": "mocha --reporter spec --full-trace test/index.js"
   },
   "repository": {
