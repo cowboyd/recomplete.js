@@ -1,5 +1,5 @@
 {
-  "name": "complete",
+  "name": "recomplete",
   "version": "0.0.1",
   "description": "Pure JavaScript completion model",
   "main": "./.js",
