@@ -1,5 +1,9 @@
 # recomplete.js
 
+[![npm version](https://badge.fury.io/js/recomplete.svg)](https://badge.fury.io/js/recomplete)
+[![Build Status](https://travis-ci.org/cowboyd/recomplete.js.svg?branch=master)](https://travis-ci.org/cowboyd/recomplete.js)
+
+
 A plain old JavaScript completion model for any UI
 
 ## Why?
