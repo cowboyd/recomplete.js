@@ -1,6 +1,5 @@
-/*global describe, beforeEach, afterEach, before, it */
-
 import Recomplete from '../src/recomplete';
+import { describe, before, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 
 describe("Recomplete", function() {

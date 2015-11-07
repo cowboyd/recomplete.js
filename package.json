@@ -15,7 +15,7 @@
   },
   "scripts": {
     "prepublish": "babel --optional runtime src/ --out-dir lib/ --source-maps",
-    "test": "mocha --reporter spec --full-trace test/index.js"
+    "test": "mocha --reporter min --full-trace test/index.js"
   },
   "repository": {
     "type": "git",

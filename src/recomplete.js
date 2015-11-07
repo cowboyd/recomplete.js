@@ -1,21 +1,33 @@
+class State {
+  constructor(previous = {}) {
+    this.query = previous.query || '';
+    this.value = previous.value || null;
+    this.currentMatch = previous.currentMatch || null;
+    this.currentMatchIndex = previous.currentMatchIndex || -1;
+    this.matches = previous.matches || [];
+    this.isInspectingMatches = previous.isInspectingMatches || false;
+  }
+
+  update(object, attrs) {
+    let next = new State(this);
+    Object.assign(next, attrs);
+    object.data = next;
+    object.observe.call(null, next, object);
+    return next;
+  }
+}
+
 export default class Recomplete {
   constructor(options = {}) {
     this.source = options.source || (()=> []);
     this.observe = options.observe || function() {};
-    this.data = {
-      query: '',
-      value: null,
-      currentMatch: null,
-      currentMatchIndex: -1,
-      matches: [],
-      isInspectingMatches: false
-    };
+    this.data = new State();
   }
 
   setQuery(query) {
     let value = this.source.call(this, query);
     let promise = value.then ? value : Promise.resolve(value);
-    update(this, {
+    this.data.update(this, {
       query: query,
       isPending: true,
       isRejected: false,
@@ -25,7 +37,7 @@ export default class Recomplete {
     let originalData = this.data;
     let updateIfFresh = (attrs)=> {
       if (originalData === this.data) {
-        update(this, attrs);
+        this.data.update(this, attrs);
       }
     };
 
@@ -58,7 +70,7 @@ export default class Recomplete {
   }
 
   selectValue(value) {
-    return update(this, {
+    return this.data.update(this, {
       isPending: false,
       isRejected: false,
       isFulfilled: false,
@@ -82,32 +94,20 @@ export default class Recomplete {
     let nextIndex = currentMatchIndex + distance;
 
     if (nextIndex < -1 && matches.length > 0) {
-      update(this, {
+      this.data.update(this, {
         currentMatchIndex: matches.length - 1,
         currentMatch: matches[matches.length - 1]
       });
     } else if (nextIndex >= matches.length || nextIndex < 0) {
-      update(this, {
+      this.data.update(this, {
         currentMatchIndex: -1,
         currentMatch: null
       });
     } else {
-      update(this, {
+      this.data.update(this, {
         currentMatchIndex: nextIndex,
         currentMatch: matches[nextIndex]
       });
     }
   }
 };
-
-function update(object, attributes) {
-  let data = object.data;
-  object.data = {};
-  Object.keys(data).forEach(function(key) {
-    object.data[key] = data[key];
-  });
-  Object.keys(attributes).forEach(function(key) {
-    object.data[key] = attributes[key];
-  });
-  object.observe.call(null, object.data, object);
-}
