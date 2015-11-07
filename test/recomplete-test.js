@@ -45,7 +45,7 @@ describe("Recomplete", function() {
       expect(data.isInspectingMatches).to.equal(true);
     });
     it("updates the matches", function() {
-      expect(data.matches).to.deep.equal(['bob', 'bob bob', 3]);
+      expect(data.matches.map((m)=> m.value)).to.deep.equal(['bob', 'bob bob', 3]);
     });
 
     describe("cancelling out", function() {
@@ -65,7 +65,7 @@ describe("Recomplete", function() {
           recomplete.inspectNextMatch();
         });
         it("updates the current match to be the one at index 0", function() {
-          expect(data.currentMatch).to.equal('bob');
+          expect(data.currentMatch.value).to.equal('bob');
         });
         describe(", then inspecting the previous match", function() {
           beforeEach(function() {
@@ -80,7 +80,7 @@ describe("Recomplete", function() {
             recomplete.inspectNextMatch();
           });
           it("considers the next match", function() {
-            expect(data.currentMatch).to.equal('bob bob');
+            expect(data.currentMatch.value).to.equal('bob bob');
           });
         });
       });
@@ -89,7 +89,7 @@ describe("Recomplete", function() {
           recomplete.inspectPreviousMatch();
         });
         it("considers the last match", function() {
-          expect(data.currentMatch).to.equal(3);
+          expect(data.currentMatch.value).to.equal(3);
         });
 
       });
@@ -125,7 +125,7 @@ describe("Recomplete", function() {
         return this.promise;
       });
       it("gets that array", function() {
-        expect(data.matches).to.deep.equal(['bob', 'dobalina', 'mr bob dobalina']);
+        expect(data.matches.map((m)=> m.value)).to.deep.equal(['bob', 'dobalina', 'mr bob dobalina']);
       });
     });
     describe("that is rejected", function() {

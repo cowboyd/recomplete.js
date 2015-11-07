@@ -4,7 +4,7 @@ class State {
     this.value = previous.value || null;
     this.currentMatch = previous.currentMatch || null;
     this.currentMatchIndex = previous.currentMatchIndex || -1;
-    this.matches = previous.matches || [];
+    this.matches = (previous.matches || []).slice();
     this.isInspectingMatches = previous.isInspectingMatches || false;
   }
 
@@ -14,6 +14,27 @@ class State {
     object.data = next;
     object.observe.call(null, next, object);
     return next;
+  }
+}
+
+export class Match {
+  constructor(defaults = {}, attrs = {}) {
+    this.attrs = Object.assign({
+      isCurrentMatch: false,
+      value: null
+    }, defaults, attrs);
+  }
+
+  get isCurrentMatch() {
+    return this.attrs.isCurrentMatch;
+  }
+
+  get index() {
+    return this.attrs.index;
+  }
+
+  get value() {
+    return this.attrs.value;
   }
 }
 
@@ -47,7 +68,7 @@ export default class Recomplete {
         isRejected: false,
         isFulfilled: true,
         isSettled: true,
-        matches: result,
+        matches: result.map((item, i) => new Match({index: i, value: item})),
         isInspectingMatches: !!result.length
       });
     }).catch(function(reason) {
