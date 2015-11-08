@@ -3,7 +3,7 @@ class InitialState {
     Object.assign(this, {
       query: '',
       value: null,
-      currentMatch: new NullMatch(),
+      currentMatch: this.nullMatch,
       matches: [],
       isInspectingMatches: false,
       isPending: false,
@@ -25,6 +25,10 @@ class InitialState {
       return -1;
     }
   }
+
+  get nullMatch() {
+    return new NullMatch(this);
+  }
 };
 
 class State extends InitialState {
@@ -45,12 +49,12 @@ class State extends InitialState {
 }
 
 export class Match {
-  constructor(defaults = {}, attrs = {}) {
+  constructor(state, attrs = {}) {
+    this.state = state;
     this.attrs = Object.assign({
       isCurrentMatch: false,
-      value: null,
-      matches: []
-    }, defaults, attrs);
+      value: null
+    }, attrs);
   }
 
   get isNull() { return false; }
@@ -69,22 +73,25 @@ export class Match {
 
   get previous() {
     if (this.index === 0) {
-      return this.nullMatch;
+      return this.state.nullMatch;
     } else {
-      return this.matches[this.index - 1];
+      return this.state.matches[this.index - 1];
     }
   }
 
   get next() {
-    if (this.index === (this.matches.length - 1)) {
-      return this.nullMatch;
+    if (this.index === (this.state.matches.length - 1)) {
+      return this.state.nullMatch;
     } else {
-      return this.matches[this.index + 1];
+      return this.state.matches[this.index + 1];
     }
   }
 }
 
 export class NullMatch extends Match {
+  constructor(state) {
+    super(state);
+  }
 
   get isNull() { return true; }
 
@@ -93,18 +100,18 @@ export class NullMatch extends Match {
   get value()  { return null; }
 
   get previous() {
-    if (this.matches.length === 0) {
+    if (this.state.matches.length === 0) {
       return this;
     } else {
-      return this.matches[this.matches.length - 1];
+      return this.state.matches[this.state.matches.length - 1];
     }
   }
 
   get next() {
-    if (this.matches.length === 0) {
+    if (this.state.matches.length === 0) {
       return this;
     } else {
-      return this.matches[0];
+      return this.state.matches[0];
     }
   }
 }
@@ -146,18 +153,17 @@ export default class Recomplete {
     };
 
     return promise.then(function(result) {
-      var attrs = {
-        isPending: false,
-        isRejected: false,
-        isFulfilled: true,
-        isSettled: true,
-        matches: result.reduce((matches, item, i) => {
-          matches.push(new Match({index: i, value: item, matches: matches}));
-          return matches;
-        }, []),
-        isInspectingMatches: !!result.length
-      };
-      updateIfFresh(attrs);
+      updateIfFresh(function(next) {
+        next.isPending = false;
+        next.isRejected = false;
+        next.isFulfiled = true;
+        next.isSettled = true;
+        next.isInspectingMatches = !!result.length;
+        next.currentMatch = next.nullMatch;
+        next.matches = result.map((item, i)=> new Match(next, {
+          index: i, value: item
+        }));
+      });
     }).catch(function(reason) {
       updateIfFresh({
         isPending: false,
@@ -190,34 +196,24 @@ export default class Recomplete {
   }
 
   inspectNextMatch() {
-    this.advanceCurrentMatchIndex(1);
+    this.advanceCurrentMatch(1);
   }
 
   inspectPreviousMatch() {
-    this.advanceCurrentMatchIndex(-1);
+    this.advanceCurrentMatch(-1);
   }
 
-  // advanceCurrentMatch(distance) {
-
-  // }
-
-  advanceCurrentMatchIndex(distance) {
-    let { currentMatchIndex, matches } = this.data;
-    let nextIndex = currentMatchIndex + distance;
-
-    if (nextIndex < -1 && matches.length > 0) {
-      this.update({
-        currentMatch: matches[matches.length - 1]
-      });
-    } else if (nextIndex >= matches.length || nextIndex < 0) {
-      this.update({
-        currentMatch: new NullMatch({
-          matches: matches
-        })
-      });
+  advanceCurrentMatch(distance) {
+    let nextMatch;
+    let currentMatch = this.data.currentMatch;
+    if (distance > 0) {
+      nextMatch = currentMatch.next;
     } else {
+      nextMatch = currentMatch.previous;
+    }
+    if (nextMatch !== currentMatch) {
       this.update({
-        currentMatch: matches[nextIndex]
+        currentMatch: nextMatch
       });
     }
   }
