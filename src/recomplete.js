@@ -1,19 +1,40 @@
-class State {
-  constructor(previous = {}) {
-    this.query = previous.query || '';
-    this.value = previous.value || null;
-    this.currentMatch = previous.currentMatch || null;
-    this.currentMatchIndex = previous.currentMatchIndex || -1;
-    this.matches = (previous.matches || []).slice();
-    this.isInspectingMatches = previous.isInspectingMatches || false;
+class InitialState {
+  constructor() {
+    Object.assign(this, {
+      query: '',
+      value: null,
+      currentMatch: null,
+      currentMatchIndex: -1,
+      matches: [],
+      isInspectingMatches: false,
+      isPending: false,
+      isFulfilled: false,
+      isRejected: false,
+      isSettled: false
+    });
   }
-
-  update(object, attrs) {
+  update(change) {
     let next = new State(this);
-    Object.assign(next, attrs);
-    object.data = next;
-    object.observe.call(null, next, object);
+    change.call(null, next);
     return next;
+  }
+};
+
+class State extends InitialState {
+  constructor(prev) {
+    super();
+    Object.assign(this, {
+      query: prev.query,
+      value: prev.value,
+      currentMatch: prev.currentMatch,
+      currentMatchIndex: prev.currentMatchIndex,
+      matches: prev.matches.slice(),
+      isInspectingMatches: prev.isInspectingMatches,
+      isPending: prev.isPending,
+      isFulfilled: prev.isFulfilled,
+      isRejected: prev.isRejected,
+      isSettled: prev.isSettled
+    });
   }
 }
 
@@ -42,13 +63,25 @@ export default class Recomplete {
   constructor(options = {}) {
     this.source = options.source || (()=> []);
     this.observe = options.observe || function() {};
-    this.data = new State();
+    this.data = new InitialState();
+  }
+
+  update(change) {
+    let next = this.data.update(function(next) {
+      if (change.call) {
+        change.call(null, next);
+      } else {
+        Object.assign(next, change);
+      }
+    });
+    this.data = next;
+    this.observe.call(null, next, this);
   }
 
   setQuery(query) {
     let value = this.source.call(this, query);
     let promise = value.then ? value : Promise.resolve(value);
-    this.data.update(this, {
+    this.update({
       query: query,
       isPending: true,
       isRejected: false,
@@ -58,19 +91,20 @@ export default class Recomplete {
     let originalData = this.data;
     let updateIfFresh = (attrs)=> {
       if (originalData === this.data) {
-        this.data.update(this, attrs);
+        this.update(attrs);
       }
     };
 
     return promise.then(function(result) {
-      updateIfFresh({
+      var attrs = {
         isPending: false,
         isRejected: false,
         isFulfilled: true,
         isSettled: true,
         matches: result.map((item, i) => new Match({index: i, value: item})),
         isInspectingMatches: !!result.length
-      });
+      };
+      updateIfFresh(attrs);
     }).catch(function(reason) {
       updateIfFresh({
         isPending: false,
@@ -91,7 +125,7 @@ export default class Recomplete {
   }
 
   selectValue(value) {
-    return this.data.update(this, {
+    return this.update({
       isPending: false,
       isRejected: false,
       isFulfilled: false,
@@ -115,17 +149,17 @@ export default class Recomplete {
     let nextIndex = currentMatchIndex + distance;
 
     if (nextIndex < -1 && matches.length > 0) {
-      this.data.update(this, {
+      this.update({
         currentMatchIndex: matches.length - 1,
         currentMatch: matches[matches.length - 1]
       });
     } else if (nextIndex >= matches.length || nextIndex < 0) {
-      this.data.update(this, {
+      this.update({
         currentMatchIndex: -1,
         currentMatch: null
       });
     } else {
-      this.data.update(this, {
+      this.update({
         currentMatchIndex: nextIndex,
         currentMatch: matches[nextIndex]
       });
