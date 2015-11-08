@@ -3,7 +3,7 @@ class InitialState {
     Object.assign(this, {
       query: '',
       value: null,
-      currentMatch: null,
+      currentMatch: new NullMatch(),
       matches: [],
       isInspectingMatches: false,
       isPending: false,
@@ -48,9 +48,12 @@ export class Match {
   constructor(defaults = {}, attrs = {}) {
     this.attrs = Object.assign({
       isCurrentMatch: false,
-      value: null
+      value: null,
+      matches: []
     }, defaults, attrs);
   }
+
+  get isNull() { return false; }
 
   get isCurrentMatch() {
     return this.attrs.isCurrentMatch;
@@ -62,6 +65,47 @@ export class Match {
 
   get value() {
     return this.attrs.value;
+  }
+
+  get previous() {
+    if (this.index === 0) {
+      return this.nullMatch;
+    } else {
+      return this.matches[this.index - 1];
+    }
+  }
+
+  get next() {
+    if (this.index === (this.matches.length - 1)) {
+      return this.nullMatch;
+    } else {
+      return this.matches[this.index + 1];
+    }
+  }
+}
+
+export class NullMatch extends Match {
+
+  get isNull() { return true; }
+
+  get index() { return -1; }
+
+  get value()  { return null; }
+
+  get previous() {
+    if (this.matches.length === 0) {
+      return this;
+    } else {
+      return this.matches[this.matches.length - 1];
+    }
+  }
+
+  get next() {
+    if (this.matches.length === 0) {
+      return this;
+    } else {
+      return this.matches[0];
+    }
   }
 }
 
@@ -107,7 +151,10 @@ export default class Recomplete {
         isRejected: false,
         isFulfilled: true,
         isSettled: true,
-        matches: result.map((item, i) => new Match({index: i, value: item})),
+        matches: result.reduce((matches, item, i) => {
+          matches.push(new Match({index: i, value: item, matches: matches}));
+          return matches;
+        }, []),
         isInspectingMatches: !!result.length
       };
       updateIfFresh(attrs);
@@ -150,23 +197,26 @@ export default class Recomplete {
     this.advanceCurrentMatchIndex(-1);
   }
 
+  // advanceCurrentMatch(distance) {
+
+  // }
+
   advanceCurrentMatchIndex(distance) {
     let { currentMatchIndex, matches } = this.data;
     let nextIndex = currentMatchIndex + distance;
 
     if (nextIndex < -1 && matches.length > 0) {
       this.update({
-        currentMatchIndex: matches.length - 1,
         currentMatch: matches[matches.length - 1]
       });
     } else if (nextIndex >= matches.length || nextIndex < 0) {
       this.update({
-        currentMatchIndex: -1,
-        currentMatch: null
+        currentMatch: new NullMatch({
+          matches: matches
+        })
       });
     } else {
       this.update({
-        currentMatchIndex: nextIndex,
         currentMatch: matches[nextIndex]
       });
     }

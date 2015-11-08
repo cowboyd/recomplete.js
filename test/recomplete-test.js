@@ -26,7 +26,8 @@ describe("Recomplete", function() {
       expect(data.value).to.be.null;
     });
     it("does not have a currently inspected match", function() {
-      expect(data.currentMatch).to.be.null;
+      expect(data.currentMatch.value).to.equal(null);
+      expect(data.currentMatch.isNull).to.equal(true);
     });
     it("is not currentlyInspectingMatches", function() {
       expect(data.isInspectingMatches).to.equal(false);
@@ -72,7 +73,8 @@ describe("Recomplete", function() {
             recomplete.inspectPreviousMatch();
           });
           it("nulls out the current match", function() {
-            expect(data.currentMatch).to.equal(null);
+            expect(data.currentMatch.value).to.equal(null);
+            expect(data.currentMatch.isNull).to.equal(true);
           });
         });
         describe(", then inspecting the next match", function() {
@@ -101,7 +103,8 @@ describe("Recomplete", function() {
           recomplete.inspectNextMatch();
         });
         it("nulls out the current match", function() {
-          expect(data.currentMatch).to.equal(null);
+          expect(data.currentMatch.value).to.equal(null);
+          expect(data.currentMatch.isNull).to.equal(true);
         });
       });
     });
