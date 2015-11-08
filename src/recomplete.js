@@ -4,7 +4,6 @@ class InitialState {
       query: '',
       value: null,
       currentMatch: null,
-      currentMatchIndex: -1,
       matches: [],
       isInspectingMatches: false,
       isPending: false,
@@ -18,6 +17,14 @@ class InitialState {
     change.call(null, next);
     return next;
   }
+
+  get currentMatchIndex() {
+    if (this.currentMatch) {
+      return this.currentMatch.index;
+    } else {
+      return -1;
+    }
+  }
 };
 
 class State extends InitialState {
@@ -27,7 +34,6 @@ class State extends InitialState {
       query: prev.query,
       value: prev.value,
       currentMatch: prev.currentMatch,
-      currentMatchIndex: prev.currentMatchIndex,
       matches: prev.matches.slice(),
       isInspectingMatches: prev.isInspectingMatches,
       isPending: prev.isPending,
