@@ -160,25 +160,33 @@ describe("Recomplete", function() {
       source = (query)=> {
         return ["first", "second"];
       };
-      beforeEach(function() {
-        recomplete.setQuery("bob");
-        recomplete.inspectNextMatch();
-        recomplete.inspectNextMatch();
-        recomplete.inspectNextMatch();
-      });
-      it("is inspecting the default match");
+    });
+    beforeEach(function() {
+      return recomplete.setQuery("bob");
+    });
+
+    beforeEach(function() {
+      recomplete.inspectNextMatch();
+      recomplete.inspectNextMatch();
+      recomplete.inspectNextMatch();
     });
     describe("that is a constant value", function() {
       before(function() {
         defaultMatch = "iamdefault";
       });
-      it("uses the constant default as its match value");
+      it("uses the constant default as its match value", function() {
+        expect(data.currentMatch.isNull).to.not.equal(true);
+        expect(data.currentMatch.value).to.equal("iamdefault");
+      });
     });
     describe("that is a function", function() {
       before(function() {
         defaultMatch = (query)=> `iamdefault 4 ${query}`;
       });
-      it("passes the query to the function in order to yield its match value");
+      it("passes the query to the function in order to yield its match value", function() {
+        expect(data.currentMatch.value).to.equal("iamdefault 4 bob");
+        expect(data.currentMatch.isDefault).to.equal(true);
+      });
     });
   });
 });

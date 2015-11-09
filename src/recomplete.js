@@ -53,6 +53,7 @@ export class Match {
     this.state = state;
     this.attrs = Object.assign({
       isCurrentMatch: false,
+      isDefault: false,
       value: null
     }, attrs);
   }
@@ -61,6 +62,10 @@ export class Match {
 
   get isCurrentMatch() {
     return this.attrs.isCurrentMatch;
+  }
+
+  get isDefault() {
+    return this.attrs.isDefault;
   }
 
   get index() {
@@ -121,6 +126,11 @@ export default class Recomplete {
     this.source = options.source || (()=> []);
     this.observe = options.observe || function() {};
     this.data = new InitialState();
+    if (!options.defaultMatch || !options.defaultMatch.call) {
+      this.defaultMatch = function() { return options.defaultMatch; };
+    } else {
+      this.defaultMatch = options.defaultMatch;
+    }
   }
 
   update(change) {
@@ -152,6 +162,8 @@ export default class Recomplete {
       }
     };
 
+    let defaultMatch = this.defaultMatch(query);
+
     return promise.then(function(result) {
       updateIfFresh(function(next) {
         next.isPending = false;
@@ -163,6 +175,13 @@ export default class Recomplete {
         next.matches = result.map((item, i)=> new Match(next, {
           index: i, value: item
         }));
+        if (defaultMatch != null) {
+          next.matches.push(new Match(next, {
+            index: result.length,
+            value: defaultMatch,
+            isDefault: true
+          }));
+        }
       });
     }).catch(function(reason) {
       updateIfFresh({
