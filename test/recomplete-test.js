@@ -67,6 +67,7 @@ describe("Recomplete", function() {
         });
         it("updates the current match to be the one at index 0", function() {
           expect(data.currentMatch.value).to.equal('bob');
+          expect(data.currentMatch.isCurrentMatch).to.equal(true);
         });
         describe(", then inspecting the previous match", function() {
           beforeEach(function() {
@@ -76,6 +77,9 @@ describe("Recomplete", function() {
             expect(data.currentMatch.value).to.equal(null);
             expect(data.currentMatch.isNull).to.equal(true);
           });
+          it("is no longer inspecting the first match at index 0", function() {
+            expect(data.matches[0].isCurrentMatch).to.equal(false);
+          });
         });
         describe(", then inspecting the next match", function() {
           beforeEach(function() {
@@ -83,6 +87,9 @@ describe("Recomplete", function() {
           });
           it("considers the next match", function() {
             expect(data.currentMatch.value).to.equal('bob bob');
+          });
+          it("marks the second match as the current match", function() {
+            expect(data.matches[1].isCurrentMatch).to.equal(true);
           });
         });
       });
@@ -92,6 +99,7 @@ describe("Recomplete", function() {
         });
         it("considers the last match", function() {
           expect(data.currentMatch.value).to.equal(3);
+          expect(data.matches[2].isCurrentMatch).to.equal(true);
         });
 
       });

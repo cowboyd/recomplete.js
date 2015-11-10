@@ -49,13 +49,13 @@ class State extends InitialState {
 }
 
 export class Match {
-  constructor(state, attrs = {}) {
+  constructor(state, attrs = {}, overrides = {}) {
     this.state = state;
     this.attrs = Object.assign({
       isCurrentMatch: false,
       isDefault: false,
       value: null
-    }, attrs);
+    }, attrs, overrides);
   }
 
   get isNull() { return false; }
@@ -91,11 +91,25 @@ export class Match {
       return this.state.matches[this.index + 1];
     }
   }
+
+  inspect(state) {
+    return new Match(state, this.attrs, {
+      isCurrentMatch: true
+    });
+  }
+
+  uninspect(state) {
+    return new Match(state, this.attrs, {
+      isCurrentMatch: false
+    });
+  }
 }
 
 export class NullMatch extends Match {
-  constructor(state) {
-    super(state);
+  constructor(state, isCurrentMatch = false) {
+    super(state, {
+      isCurrentMatch: isCurrentMatch
+    });
   }
 
   get isNull() { return true; }
@@ -118,6 +132,14 @@ export class NullMatch extends Match {
     } else {
       return this.state.matches[0];
     }
+  }
+
+  inspect(state) {
+    return new NullMatch(state, true);
+  }
+
+  uninspect(state) {
+    return new NullMatch(state, false);
   }
 }
 
@@ -231,8 +253,15 @@ export default class Recomplete {
       nextMatch = currentMatch.previous;
     }
     if (nextMatch !== currentMatch) {
-      this.update({
-        currentMatch: nextMatch
+      this.update(function (next) {
+        next.currentMatch = nextMatch.inspect(next);
+        next.matches = next.matches.map(function(match, i) {
+          if (match.index === nextMatch.index) {
+            return next.currentMatch;
+          } else {
+            return match.uninspect(next);
+          }
+        });
       });
     }
   }
