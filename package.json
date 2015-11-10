@@ -2,8 +2,8 @@
   "name": "recomplete",
   "version": "0.1.0",
   "description": "Pure JavaScript completion model",
-  "main": "./.js",
-  "jsnext:main": "./src/index.js",
+  "main": "./lib/recomplete.js",
+  "jsnext:main": "./src/recomplete.js",
   "dependencies": {
     "immstruct": ">= 2.0.0",
     "babel-runtime": "^5.8.25"
