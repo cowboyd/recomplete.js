@@ -1,6 +1,6 @@
 {
   "name": "recomplete",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Pure JavaScript completion model",
   "main": "./lib/recomplete.js",
   "jsnext:main": "./src/recomplete.js",
